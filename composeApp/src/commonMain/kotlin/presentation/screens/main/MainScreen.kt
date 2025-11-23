@@ -51,13 +51,19 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import domain.models.Category
 import domain.models.Item
+import getPlatform
 import hackernewskmp.composeapp.generated.resources.Res
 import hackernewskmp.composeapp.generated.resources.about
+import hackernewskmp.composeapp.generated.resources.about_appname
 import hackernewskmp.composeapp.generated.resources.an_error_occurred
 import hackernewskmp.composeapp.generated.resources.ic_alt_arrow_down_linear
 import hackernewskmp.composeapp.generated.resources.ic_info_circle_linear
+import hackernewskmp.composeapp.generated.resources.ic_more_vert
+import hackernewskmp.composeapp.generated.resources.ic_user_circle_linear
 import hackernewskmp.composeapp.generated.resources.loading
+import hackernewskmp.composeapp.generated.resources.more_options
 import hackernewskmp.composeapp.generated.resources.retry
+import hackernewskmp.composeapp.generated.resources.user
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.getString
@@ -74,12 +80,13 @@ fun MainScreen(
     onClickItem: (Item) -> Unit,
     onClickComment: (Item) -> Unit,
     onClickAbout: () -> Unit,
+    onClickUser: () -> Unit,
 ) {
     val viewModel = koinInject<MainViewModel>()
     val state by viewModel.state
     val snackBarHostState = remember { SnackbarHostState() }
     Scaffold(
-        topBar = { AppTopBar(onClickAbout = onClickAbout) },
+        topBar = { AppTopBar(onClickAbout = onClickAbout, onClickUser = onClickUser) },
         snackbarHost = { SnackbarHost(snackBarHostState) },
         content = { padding ->
             val pullToRefreshState = rememberPullToRefreshState()
@@ -119,9 +126,14 @@ fun MainScreen(
 }
 
 @Composable
-fun AppTopBar(onClickAbout: () -> Unit, viewModel: MainViewModel = koinInject()) {
+fun AppTopBar(
+    onClickAbout: () -> Unit,
+    onClickUser: () -> Unit,
+    viewModel: MainViewModel = koinInject(),
+) {
     val state by viewModel.state
-    var expanded by remember { mutableStateOf(false) }
+    var categoryMenuExpanded by remember { mutableStateOf(false) }
+    var overflowMenuExpanded by remember { mutableStateOf(false) }
 
     TopAppBar(
         expandedHeight = 64.dp,
@@ -133,7 +145,7 @@ fun AppTopBar(onClickAbout: () -> Unit, viewModel: MainViewModel = koinInject())
                     .clickable(
                         interactionSource = null,
                         indication = ripple(),
-                        onClick = { expanded = true },
+                        onClick = { categoryMenuExpanded = true },
                     )
                     .minimumInteractiveComponentSize()
                     .padding(horizontal = 16.dp),
@@ -151,8 +163,8 @@ fun AppTopBar(onClickAbout: () -> Unit, viewModel: MainViewModel = koinInject())
             }
             DropdownMenu(
                 offset = DpOffset(16.dp, 0.dp),
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
+                expanded = categoryMenuExpanded,
+                onDismissRequest = { categoryMenuExpanded = false },
                 modifier = Modifier.padding(horizontal = 16.dp)
             ) {
                 Category.getAll().forEach { category ->
@@ -168,16 +180,37 @@ fun AppTopBar(onClickAbout: () -> Unit, viewModel: MainViewModel = koinInject())
                         },
                         onClick = {
                             viewModel.onClickCategory(category)
-                            expanded = false
+                            categoryMenuExpanded = false
                         })
                 }
             }
         },
         actions = {
-            IconButton(onClick = onClickAbout) {
+            IconButton(onClick = { overflowMenuExpanded = true }) {
                 Icon(
-                    painter = painterResource(Res.drawable.ic_info_circle_linear),
-                    contentDescription = stringResource(Res.string.about),
+                    painter = painterResource(Res.drawable.ic_more_vert),
+                    contentDescription = stringResource(Res.string.more_options),
+                )
+            }
+            DropdownMenu(
+                expanded = overflowMenuExpanded,
+                onDismissRequest = { overflowMenuExpanded = false },
+            ) {
+                DropdownMenuItem(
+                    text = { Text(text = stringResource(Res.string.user)) },
+                    leadingIcon = { Icon(painterResource(Res.drawable.ic_user_circle_linear), null) },
+                    onClick = {
+                        overflowMenuExpanded = false
+                        onClickUser()
+                    },
+                )
+                DropdownMenuItem(
+                    text = { Text(text = stringResource(Res.string.about_appname, getPlatform().appName)) },
+                    leadingIcon = { Icon(painterResource(Res.drawable.ic_info_circle_linear), null) },
+                    onClick = {
+                        overflowMenuExpanded = false
+                        onClickAbout()
+                    },
                 )
             }
         }

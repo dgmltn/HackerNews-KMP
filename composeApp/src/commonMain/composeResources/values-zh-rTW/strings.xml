@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="about">關於</string>
+    <string name="user">使用者</string>
     <string name="an_error_occurred">發生了錯誤</string>
     <string name="back_button_content_description">返回</string>
     <string name="app_icon_content_description">Hacker News KMP App 圖示</string>
+    <string name="more_options">更多選項</string>
     <string name="retry">重試</string>
     <string name="loading">讀取中...</string>
     <string name="points">%1$d 點</string>

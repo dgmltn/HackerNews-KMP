@@ -15,6 +15,8 @@ import presentation.screens.details.DetailsScreen
 import presentation.screens.details.DetailsScreenTab
 import presentation.screens.main.MainRoute
 import presentation.screens.main.MainScreen
+import presentation.screens.user.UserRoute
+import presentation.screens.user.UserScreen
 
 @Composable
 fun RootScreen(navController: NavHostController = rememberNavController()) {
@@ -27,7 +29,8 @@ fun RootScreen(navController: NavHostController = rememberNavController()) {
             MainScreen(
                 onClickItem = { navController.navigate(DetailsRoute(id = it.getItemId(), tab = DetailsScreenTab.Webview.name)) },
                 onClickComment = { navController.navigate(DetailsRoute(id = it.getItemId(), tab = DetailsScreenTab.Comments.name)) },
-                onClickAbout = { navController.navigate(AboutRoute) }
+                onClickAbout = { navController.navigate(AboutRoute) },
+                onClickUser = { navController.navigate(UserRoute) },
             )
         }
 
@@ -42,6 +45,10 @@ fun RootScreen(navController: NavHostController = rememberNavController()) {
 
         composable<AboutRoute> {
             AboutScreen(onBack = { navController.popBackStack() })
+        }
+
+        composable<UserRoute> {
+            UserScreen(onBack = { navController.popBackStack() })
         }
     }
 }

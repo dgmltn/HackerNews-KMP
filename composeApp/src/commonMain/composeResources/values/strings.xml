@@ -1,8 +1,11 @@
 <resources>
     <string name="about">About</string>
+    <string name="about_appname">About %1$s</string>
+    <string name="user">User</string>
     <string name="an_error_occurred">An error occurred</string>
     <string name="back_button_content_description">Back</string>
     <string name="app_icon_content_description">Hacker News KMP App Icon</string>
+    <string name="more_options">More options</string>
     <string name="retry">Retry</string>
     <string name="loading">Loading...</string>
     <string name="points">%1$d points</string>
@@ -25,4 +28,5 @@
     </plurals>
     <string name="share_link">Share Link</string>
     <string name="share_comments">Share Comments</string>
+    <string name="hello_world">hello world</string>
 </resources>
