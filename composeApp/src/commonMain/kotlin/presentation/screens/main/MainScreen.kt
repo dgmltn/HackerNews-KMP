@@ -30,7 +30,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
@@ -71,6 +70,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import presentation.viewmodels.MainViewModel
+import ui.appTopAppBarColors
 
 @Serializable
 object MainRoute
@@ -137,7 +137,7 @@ fun AppTopBar(
 
     TopAppBar(
         expandedHeight = 64.dp,
-        colors = TopAppBarDefaults.topAppBarColors().run { copy(containerColor = containerColor.copy(alpha = 0.9f)) },
+        colors = appTopAppBarColors(),
         title = {
             Row(
                 modifier = Modifier

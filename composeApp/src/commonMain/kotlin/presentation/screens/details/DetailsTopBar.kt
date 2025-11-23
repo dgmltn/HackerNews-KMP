@@ -9,7 +9,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,6 +34,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import presentation.widgets.SquircleBadge
 import ui.AppPreview
+import ui.appTopAppBarColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,7 +51,7 @@ fun DetailsTopBar(
     val commentsLabel = pluralStringResource(Res.plurals.x_comments, commentCount, commentCount)
     TopAppBar(
         modifier = modifier,
-        colors = TopAppBarDefaults.topAppBarColors().run { copy(containerColor = containerColor.copy(alpha = 0.9f)) },
+        colors = appTopAppBarColors(),
         title = {
             if (selectedTab == DetailsScreenTab.Comments || trimmedHostName == null) {
                 Text(commentsLabel)

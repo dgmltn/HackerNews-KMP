@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -23,11 +22,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -50,6 +47,7 @@ import presentation.widgets.RowOrColumnLayout
 import sv.lib.squircleshape.SquircleShape
 import ui.AppPreview
 import ui.HnColor
+import ui.appTopAppBarColors
 
 private const val AUTHOR = "Jarvis Lin"
 private const val GITHUB_URL = "https://github.com/jarvislin/HackerNews-KMP"
@@ -96,7 +94,7 @@ private fun AboutScreen(
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors().run { copy(containerColor = containerColor.copy(alpha = 0.9f)) },
+                colors = appTopAppBarColors(),
             )
         }
     ) { padding ->
