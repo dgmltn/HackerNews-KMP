@@ -1,4 +1,4 @@
-package data.local
+package data.appconfig
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences

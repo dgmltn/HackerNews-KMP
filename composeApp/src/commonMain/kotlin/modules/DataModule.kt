@@ -1,6 +1,6 @@
 package modules
 
-import data.local.AppPreferences
+import data.appconfig.AppPreferences
 import data.remote.ApiHandler
 import domain.models.Ask
 import domain.models.Comment

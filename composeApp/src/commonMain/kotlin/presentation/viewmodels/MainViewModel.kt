@@ -4,7 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import data.local.AppPreferences
+import data.appconfig.AppPreferences
 import domain.interactors.GetItems
 import domain.interactors.GetStories
 import domain.models.Category
