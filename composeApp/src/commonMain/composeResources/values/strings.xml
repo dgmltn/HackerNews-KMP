@@ -28,5 +28,5 @@
     </plurals>
     <string name="share_link">Share Link</string>
     <string name="share_comments">Share Comments</string>
-    <string name="hello_world">hello world</string>
+    <string name="seen_stories">Seen stories</string>
 </resources>

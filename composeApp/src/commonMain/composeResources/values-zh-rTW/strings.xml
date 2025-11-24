@@ -28,4 +28,5 @@
     </plurals>
     <string name="share_link">分享連結</string>
     <string name="share_comments">分享留言</string>
+    <string name="seen_stories">已讀取的文章</string>
 </resources>

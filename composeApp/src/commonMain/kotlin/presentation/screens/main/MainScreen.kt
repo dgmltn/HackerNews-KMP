@@ -81,8 +81,8 @@ fun MainScreen(
     onClickComment: (Item) -> Unit,
     onClickAbout: () -> Unit,
     onClickUser: () -> Unit,
+    viewModel: MainViewModel = koinInject(),
 ) {
-    val viewModel = koinInject<MainViewModel>()
     val state by viewModel.state
     val snackBarHostState = remember { SnackbarHostState() }
     Scaffold(
