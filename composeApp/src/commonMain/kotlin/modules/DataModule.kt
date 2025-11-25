@@ -1,6 +1,8 @@
 package modules
 
 import data.appconfig.AppPreferences
+import data.appconfig.ConfigStore
+import data.appconfig.LocalConfigStore
 import data.remote.ApiHandler
 import domain.models.Ask
 import domain.models.Comment
@@ -52,6 +54,8 @@ val dataModule = module {
     single { ApiHandler }
     
     single { getPlatform().createDataStore() }
+
+    single<ConfigStore> { LocalConfigStore(get()) }
 
     single { AppPreferences(get()) }
 }

@@ -22,7 +22,7 @@ class MainViewModel(
 
     init {
         viewModelScope.launch {
-            appPreferences.seenItemList.collect {
+            appPreferences.observeSeenItems().collect {
                 _state.value = state.value.copy(seenItemsIds = it)
             }
         }

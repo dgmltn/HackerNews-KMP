@@ -1,27 +1,37 @@
 package data.appconfig
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringSetPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.serialization.builtins.SetSerializer
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.json.Json
 
+class AppPreferences(
+    private val configStore: ConfigStore,
+    private val json: Json,
+) {
+    private val serializer = SetSerializer(String.serializer())
 
-class AppPreferences(private val dataStore: DataStore<Preferences>) {
-    val seenItemList: Flow<Set<String>> =
-        dataStore.data.map { preferences ->
-            preferences[SEEN_ITEMS] ?: emptySet()
-        }
+    fun observeSeenItems(): Flow<Set<String>> =
+        configStore.observe(SEEN_ITEMS_KEY).map { decodeItems(it) }
 
     suspend fun markItemAsSeen(itemId: String) {
-        dataStore.edit { preferences ->
-            val currentSeenItems = preferences[SEEN_ITEMS] ?: emptySet()
-            preferences[SEEN_ITEMS] = currentSeenItems + itemId
-        }
+        val currentSeenItems = readSeenItems()
+        if (itemId in currentSeenItems) return
+        val updatedItems = currentSeenItems + itemId
+        configStore.set(SEEN_ITEMS_KEY, encodeItems(updatedItems))
     }
 
+    private suspend fun readSeenItems(): Set<String> =
+        decodeItems(configStore.get(SEEN_ITEMS_KEY))
+
+    private fun encodeItems(items: Set<String>): String =
+        json.encodeToString(serializer, items)
+
+    private fun decodeItems(raw: String?): Set<String> =
+        raw?.let { runCatching { json.decodeFromString(serializer, it) }.getOrElse { emptySet() } } ?: emptySet()
+
     companion object {
-        val SEEN_ITEMS = stringSetPreferencesKey("seen_items")
+        private const val SEEN_ITEMS_KEY = "seen_items"
     }
 }
