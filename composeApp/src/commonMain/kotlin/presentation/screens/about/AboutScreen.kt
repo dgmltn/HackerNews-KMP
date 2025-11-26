@@ -48,6 +48,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import presentation.widgets.RowOrColumnLayout
 import sv.lib.squircleshape.SquircleShape
+import ui.AppPreview
 import ui.HnColor
 
 private const val AUTHOR = "Jarvis Lin"
@@ -56,13 +57,33 @@ private const val GITHUB_URL = "https://github.com/jarvislin/HackerNews-KMP"
 @Serializable
 object AboutRoute
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AboutScreen(onBack: () -> Unit) {
+fun AboutScreen(
+    onBack: () -> Unit
+) {
     val uriHandler = LocalUriHandler.current
     val appVersionName = getPlatform().appVersionName
     val appVersionCode = getPlatform().appVersionCode.toString()
     val appName = getPlatform().appName
+
+    AboutScreen(
+        appName = appName,
+        appVersionName = appVersionName,
+        appVersionCode = appVersionCode,
+        onBack = onBack,
+        onOpenUri = { uriHandler.openUri(it) },
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun AboutScreen(
+    appName: String,
+    appVersionName: String,
+    appVersionCode: String,
+    onBack: () -> Unit,
+    onOpenUri: (String) -> Unit,
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -123,7 +144,7 @@ fun AboutScreen(onBack: () -> Unit) {
                 textAlign = TextAlign.Center
             )
             Spacer(Modifier.height(8.dp))
-            TextButton(onClick = { uriHandler.openUri(GITHUB_URL) }) {
+            TextButton(onClick = { onOpenUri(GITHUB_URL) }) {
                 Text(text = GITHUB_URL)
             }
             Spacer(Modifier.height(24.dp))
@@ -139,8 +160,8 @@ fun AboutScreen(onBack: () -> Unit) {
                 openSourceLibraries.forEach { library ->
                     OpenSourceLibraryRow(
                         library = library,
-                        onClickProjectUrl = { uriHandler.openUri(library.projectUrl) },
-                        onClickLicenseUrl = { uriHandler.openUri(library.licenseUrl) },
+                        onClickProjectUrl = { onOpenUri(library.projectUrl) },
+                        onClickLicenseUrl = { onOpenUri(library.licenseUrl) },
                         modifier = Modifier.align(Alignment.Start)
                     )
                 }
@@ -210,6 +231,20 @@ private fun OpenSourceLibraryRowPreview() {
             library = library,
             onClickProjectUrl = {},
             onClickLicenseUrl = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun Preview_UserScreen() {
+    AppPreview {
+        AboutScreen(
+            appName = "Pulse",
+            appVersionName = "1.3.1",
+            appVersionCode = "7",
+            onBack = {},
+            onOpenUri = {}
         )
     }
 }
