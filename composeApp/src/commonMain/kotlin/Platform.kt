@@ -12,6 +12,12 @@ interface Platform {
     val appVersionCode: Int
 
     /**
+     * Supabase config
+     */
+    val supabaseUrl: String
+    val supabaseKey: String
+
+    /**
      *   Gets the singleton DataStore instance, creating it if necessary.
      */
     fun createDataStore(): DataStore<Preferences>

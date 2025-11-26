@@ -8,12 +8,13 @@ import kotlinx.coroutines.launch
 class HybridConfigStore(
     private val local: ConfigStore,
     private val remote: ConfigStore?
-) : ConfigStore {
+) : SyncableConfigStore {
 
     // If cached locally, use the cache. Otherwise fallback to remote
-    override suspend fun get(key: String): String? {
+    override suspend fun get(key: String, syncable: Boolean): String? {
         val cached = local.get(key)
         if (cached != null) return cached
+        if (!syncable) return null
 
         val remote = remote?.get(key)
         if (remote != null) {
@@ -24,13 +25,13 @@ class HybridConfigStore(
         return null
     }
 
-    override fun observe(key: String): Flow<String?> =
+    override fun observe(key: String, syncable: Boolean): Flow<String?> =
         channelFlow {
             val localJob = launch {
                 local.observe(key).collect { send(it) }
             }
 
-            val remoteJob = remote?.let { store ->
+            val remoteJob = remote?.takeIf { syncable }?.let { store ->
                 launch {
                     store.observe(key).collect { remoteValue ->
                         if (remoteValue != null && remoteValue != local.get(key)) {
@@ -47,8 +48,9 @@ class HybridConfigStore(
         }
 
     // Set both local cache and remote
-    override suspend fun set(key: String, value: String) {
+    override suspend fun set(key: String, value: String, syncable: Boolean) {
         local.set(key, value)
+        if (!syncable) return
         remote?.set(key, value)
     }
 

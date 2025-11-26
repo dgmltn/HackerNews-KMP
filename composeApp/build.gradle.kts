@@ -1,3 +1,4 @@
+import com.android.build.api.dsl.ApplicationDefaultConfig
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -59,6 +60,9 @@ kotlin {
             implementation(libs.androidx.datastore)
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.ui.backhandler)
+            implementation(libs.supabase.kt)
+            implementation(libs.supabase.postgrest)
+            implementation(libs.supabase.realtime)
         }
     }
 }
@@ -77,6 +81,7 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = libs.versions.app.version.code.get().toInt()
         versionName = libs.versions.app.version.name.get()
+        addSupabaseConfig()
     }
 
     packaging {
@@ -145,4 +150,36 @@ tasks.register("updatePlistVersion") {
 
         plistFile.writeText(plistContent)
     }
+}
+
+/**
+ * Configuration for Supabase in Gradle properties.
+ */
+fun ApplicationDefaultConfig.addSupabaseConfig() {
+    buildConfigField("String", "SUPABASE_URL", "\"${findProperty("PULSE_SUPABASE_URL")}\"")
+    buildConfigField("String", "SUPABASE_KEY", "\"${findProperty("PULSE_SUPABASE_KEY")}\"")
+}
+
+tasks.register("generateLocalXcconfig") {
+    val xcconfigFile = project.file("../iosApp/Configuration/local.xcconfig")
+    val supabaseUrl = findProperty("PULSE_SUPABASE_URL") as? String
+    val supabaseKey = findProperty("PULSE_SUPABASE_KEY") as? String
+
+    outputs.file(xcconfigFile)
+
+    doLast {
+        if (supabaseUrl == null || supabaseKey == null) {
+            throw GradleException("Supabase credentials not found in gradle.properties. See SUPABASE.md")
+        }
+        xcconfigFile.writeText(
+            """
+            SUPABASE_URL=$supabaseUrl
+            SUPABASE_KEY=$supabaseKey
+            """.trimIndent()
+        )
+    }
+}
+
+tasks.named("embedAndSignAppleFrameworkForXcode") {
+    dependsOn("generateLocalXcconfig")
 }

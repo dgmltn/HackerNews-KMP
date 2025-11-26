@@ -2,7 +2,12 @@ package modules
 
 import data.appconfig.AppPreferences
 import data.appconfig.ConfigStore
+import data.appconfig.HybridConfigStore
 import data.appconfig.LocalConfigStore
+import data.appconfig.SupabaseAccountVerifier
+import data.appconfig.SupabaseConfigStore
+import data.appconfig.SyncAccountVerifier
+import data.appconfig.SyncableConfigStore
 import data.remote.ApiHandler
 import domain.models.Ask
 import domain.models.Comment
@@ -14,6 +19,11 @@ import domain.models.Story
 import getPlatform
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
+import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.createSupabaseClient
+import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.realtime.Realtime
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
@@ -55,7 +65,26 @@ val dataModule = module {
     
     single { getPlatform().createDataStore() }
 
-    single<ConfigStore> { LocalConfigStore(get()) }
+    single { LocalConfigStore(get()) }
 
-    single { AppPreferences(get()) }
+    single { SupabaseConfigStore(get()) }
+    single<SyncAccountVerifier> { SupabaseAccountVerifier(get()) }
+
+    single<SyncableConfigStore> { HybridConfigStore(get<LocalConfigStore>(), get<SupabaseConfigStore>()) }
+//    single<ConfigStore> { HybridConfigStore(get<LocalConfigStore>(), null) }
+//    single<ConfigStore> { LocalConfigStore(get()) }
+//    single<ConfigStore> { SupabaseConfigStore() }
+
+    single { AppPreferences(get(), get(), get()) }
+
+    single<SupabaseClient> {
+        createSupabaseClient(
+            supabaseUrl = getPlatform().supabaseUrl,
+            supabaseKey = getPlatform().supabaseKey
+        ) {
+            install(Auth)
+            install(Postgrest)
+            install(Realtime)
+        }
+    }
 }

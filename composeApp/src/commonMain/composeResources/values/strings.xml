@@ -29,4 +29,9 @@
     <string name="share_link">Share Link</string>
     <string name="share_comments">Share Comments</string>
     <string name="seen_stories">Seen stories</string>
+    <string name="sync_info_section_title">Sync Info</string>
+    <string name="sync_enabled">Sync enabled</string>
+    <string name="stats_section_title">Stats</string>
+    <string name="email">Email</string>
+    <string name="unconfirmed">Unconfirmed</string>
 </resources>

@@ -39,7 +39,6 @@ import hackernewskmp.composeapp.generated.resources.ic_launcher_mono
 import hackernewskmp.composeapp.generated.resources.ic_square_top_down_linear
 import hackernewskmp.composeapp.generated.resources.open_source_libraries
 import hackernewskmp.composeapp.generated.resources.version_version_author
-import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -51,9 +50,6 @@ import ui.appTopAppBarColors
 
 private const val AUTHOR = "Jarvis Lin"
 private const val GITHUB_URL = "https://github.com/jarvislin/HackerNews-KMP"
-
-@Serializable
-object AboutRoute
 
 @Composable
 fun AboutScreen(

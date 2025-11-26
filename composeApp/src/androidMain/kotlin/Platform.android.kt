@@ -38,6 +38,9 @@ class AndroidPlatform(private val context: Context) : Platform {
 
     override val appVersionCode: Int = BuildConfig.VERSION_CODE
 
+    override val supabaseUrl: String = BuildConfig.SUPABASE_URL
+    override val supabaseKey: String = BuildConfig.SUPABASE_KEY
+
     override fun createDataStore(): DataStore<Preferences> =
         PreferenceDataStoreFactory.createWithPath(
             produceFile = { context.filesDir.resolve(DATASTORE_FILE_NAME).absolutePath.toPath() }

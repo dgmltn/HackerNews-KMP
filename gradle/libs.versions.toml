@@ -21,6 +21,9 @@ compose-webview-multiplatform = "2.0.3"
 # https://developer.android.com/kotlin/multiplatform/datastore
 datastore = "1.1.7"
 
+# https://github.com/supabase-community/supabase-kt
+supabase = "3.2.6"
+
 # https://github.com/cbeyls/HtmlConverterCompose/releases
 htmlconverter = "1.1.0"
 
@@ -67,6 +70,9 @@ napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigation-compose" }
 squircle-shape = { module = "com.stoyanvuchev:squircle-shape", version.ref = "squircleShape" }
 ui-backhandler = { module = "org.jetbrains.compose.ui:ui-backhandler", version.ref = "uiBackhandler" }
+supabase-kt = { module = "io.github.jan-tennert.supabase:supabase-kt", version.ref = "supabase" }
+supabase-postgrest = { module = "io.github.jan-tennert.supabase:postgrest-kt", version.ref = "supabase" }
+supabase-realtime = { module = "io.github.jan-tennert.supabase:realtime-kt", version.ref = "supabase" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

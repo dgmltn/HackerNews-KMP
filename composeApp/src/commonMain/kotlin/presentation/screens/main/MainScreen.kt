@@ -52,7 +52,6 @@ import domain.models.Category
 import domain.models.Item
 import getPlatform
 import hackernewskmp.composeapp.generated.resources.Res
-import hackernewskmp.composeapp.generated.resources.about
 import hackernewskmp.composeapp.generated.resources.about_appname
 import hackernewskmp.composeapp.generated.resources.an_error_occurred
 import hackernewskmp.composeapp.generated.resources.ic_alt_arrow_down_linear
@@ -64,16 +63,12 @@ import hackernewskmp.composeapp.generated.resources.more_options
 import hackernewskmp.composeapp.generated.resources.retry
 import hackernewskmp.composeapp.generated.resources.user
 import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import presentation.viewmodels.MainViewModel
 import ui.appTopAppBarColors
-
-@Serializable
-object MainRoute
 
 @Composable
 fun MainScreen(

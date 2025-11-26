@@ -32,6 +32,9 @@ class IOSPlatform : Platform {
     override val appVersionName: String = NSBundle.mainBundle.objectForInfoDictionaryKey("CFBundleShortVersionString") as? String ?: "1.0"
     override val appVersionCode: Int = (NSBundle.mainBundle.objectForInfoDictionaryKey("CFBundleVersion") as? String)?.toIntOrNull() ?: 0
 
+    override val supabaseUrl: String = NSBundle.mainBundle.objectForInfoDictionaryKey("SUPABASE_URL") as? String ?: ""
+    override val supabaseKey: String = NSBundle.mainBundle.objectForInfoDictionaryKey("SUPABASE_KEY") as? String ?: ""
+
     @OptIn(ExperimentalForeignApi::class)
     override fun createDataStore(): DataStore<Preferences> =
         PreferenceDataStoreFactory.createWithPath(
