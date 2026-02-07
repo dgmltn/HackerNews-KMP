@@ -79,6 +79,7 @@ fun MainScreen(
 ) {
     val viewModel = koinInject<MainViewModel>()
     val state by viewModel.state
+    val isRefreshIndicatorVisible = state.refreshing || (state.loading && state.items.isEmpty())
     val snackBarHostState = remember { SnackbarHostState() }
     Scaffold(
         topBar = {
@@ -92,14 +93,14 @@ fun MainScreen(
         content = { padding ->
             val pullToRefreshState = rememberPullToRefreshState()
             PullToRefreshBox(
-                isRefreshing = state.refreshing,
+                isRefreshing = isRefreshIndicatorVisible,
                 onRefresh = viewModel::onPullToRefresh,
                 modifier = Modifier.fillMaxSize(),
                 state = pullToRefreshState,
                 indicator = {
                     Indicator(
                         modifier = Modifier.padding(padding).align(Alignment.TopCenter),
-                        isRefreshing = state.refreshing,
+                        isRefreshing = isRefreshIndicatorVisible,
                         state = pullToRefreshState,
                     )
                 },
@@ -231,34 +232,29 @@ fun PaginatedItemList(
         }
     }
 
-    Box {
-        if (loading && items.isEmpty()) {
-            CircularProgressIndicator(Modifier.align(Alignment.Center))
+    LazyColumn(
+        state = listState,
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = contentPadding
+    ) {
+        items(items = items, key = { item -> item.getItemId() }) { item ->
+            ItemRowWidget(
+                item = item,
+                seen = seenItemsIds.contains(item.getItemId().toString()),
+                onClickItem = {
+                    onMarkItemAsSeen(item)
+                    onClickItem(item)
+                },
+                onClickComment = {
+                    onMarkItemAsSeen(item)
+                    onClickComment(item)
+                },
+            )
         }
-        LazyColumn(
-            state = listState,
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = contentPadding
-        ) {
-            items(items = items, key = { item -> item.getItemId() }) { item ->
-                ItemRowWidget(
-                    item = item,
-                    seen = seenItemsIds.contains(item.getItemId().toString()),
-                    onClickItem = {
-                        onMarkItemAsSeen(item)
-                        onClickItem(item)
-                    },
-                    onClickComment = {
-                        onMarkItemAsSeen(item)
-                        onClickComment(item)
-                    },
-                )
-            }
 
-            if (items.isNotEmpty() && currentPage * MainViewModel.PAGE_SIZE < itemIds.size) {
-                // only display the loading item if there are items loaded
-                item { ItemLoadingWidget() }
-            }
+        if (items.isNotEmpty() && currentPage * MainViewModel.PAGE_SIZE < itemIds.size) {
+            // only display the loading item if there are items loaded
+            item { ItemLoadingWidget() }
         }
     }
 }
