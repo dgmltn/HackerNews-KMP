@@ -165,11 +165,13 @@ fun DetailsScreenContent(
             )
         }
         if (urlString != null) {
+            val visible = selectedTab == DetailsScreenTab.Webview
             FadeVisibilityKeepingState(
-                visible = selectedTab == DetailsScreenTab.Webview,
+                visible = visible,
             ) {
                 WebviewTabContent(
                     url = urlString,
+                    visible = visible,
                     modifier = Modifier
                         .padding(padding)
                 )

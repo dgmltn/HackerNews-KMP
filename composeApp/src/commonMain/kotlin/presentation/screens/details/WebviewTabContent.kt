@@ -24,6 +24,7 @@ import utils.Constants
 @Composable
 fun WebviewTabContent(
     url: String,
+    visible: Boolean,
     modifier: Modifier = Modifier,
     defaultBackgroundColor: Color = MaterialTheme.colorScheme.background,
     webViewNavigator: WebViewNavigator = rememberWebViewNavigator(
@@ -40,6 +41,7 @@ fun WebviewTabContent(
     Box(modifier = modifier.fillMaxSize()) {
         WebView(
             navigator = webViewNavigator,
+            captureBackPresses = visible,
             state = webViewState,
             modifier = Modifier
                 .fillMaxSize()
