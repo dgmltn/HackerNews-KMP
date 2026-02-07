@@ -75,16 +75,16 @@ fun ItemRowWidget(
                     LabelledIcon(
                         label = url.trimmedHostName(),
                         url = url.faviconUrl(),
-                        placeholder = painterResource(Res.drawable.ic_link_minimalistic_linear),
+                        placeholder = Res.drawable.ic_link_minimalistic_linear,
                     )
                 }
                 LabelledIcon(
                     label = item.getPoint().toString(),
-                    icon = painterResource(Res.drawable.ic_like_outline),
+                    icon = Res.drawable.ic_like_outline,
                 )
                 LabelledIcon(
                     label = item.getFormattedDiffTimeShort(),
-                    icon = painterResource(Res.drawable.ic_clock_circle_linear),
+                    icon = Res.drawable.ic_clock_circle_linear,
                 )
             }
         }

@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
@@ -58,6 +58,8 @@ import hackernewskmp.composeapp.generated.resources.ic_alt_arrow_down_linear
 import hackernewskmp.composeapp.generated.resources.ic_info_circle_linear
 import hackernewskmp.composeapp.generated.resources.loading
 import hackernewskmp.composeapp.generated.resources.retry
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.getString
@@ -79,7 +81,13 @@ fun MainScreen(
     val state by viewModel.state
     val snackBarHostState = remember { SnackbarHostState() }
     Scaffold(
-        topBar = { AppTopBar(onClickAbout = onClickAbout) },
+        topBar = {
+            AppTopBar(
+                currentCategory = viewModel.state.value.currentCategory,
+                onClickCategory = viewModel::onClickCategory,
+                onClickAbout = onClickAbout,
+            )
+         },
         snackbarHost = { SnackbarHost(snackBarHostState) },
         content = { padding ->
             val pullToRefreshState = rememberPullToRefreshState()
@@ -97,8 +105,15 @@ fun MainScreen(
                 },
             ) {
                 PaginatedItemList(
+                    loading = state.loading,
+                    currentPage = state.currentPage,
+                    itemIds = state.itemIds,
+                    items = state.items,
+                    seenItemsIds = state.seenItemsIds,
                     onClickItem = onClickItem,
                     onClickComment = onClickComment,
+                    onLoadNextPage = viewModel::loadNextPage,
+                    onMarkItemAsSeen = viewModel::markItemAsSeen,
                     contentPadding = padding,
                 )
             }
@@ -119,8 +134,11 @@ fun MainScreen(
 }
 
 @Composable
-fun AppTopBar(onClickAbout: () -> Unit, viewModel: MainViewModel = koinInject()) {
-    val state by viewModel.state
+fun AppTopBar(
+    currentCategory: Category,
+    onClickAbout: () -> Unit,
+    onClickCategory: (Category) -> Unit,
+) {
     var expanded by remember { mutableStateOf(false) }
 
     TopAppBar(
@@ -140,7 +158,7 @@ fun AppTopBar(onClickAbout: () -> Unit, viewModel: MainViewModel = koinInject())
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = state.currentCategory.title,
+                    text = currentCategory.title,
                     style = MaterialTheme.typography.headlineMedium,
                 )
                 Spacer(Modifier.width(8.dp))
@@ -156,7 +174,7 @@ fun AppTopBar(onClickAbout: () -> Unit, viewModel: MainViewModel = koinInject())
                 modifier = Modifier.padding(horizontal = 16.dp)
             ) {
                 Category.getAll().forEach { category ->
-                    val isCurrent = category == state.currentCategory
+                    val isCurrent = category == currentCategory
                     DropdownMenuItem(
                         modifier = Modifier.minimumInteractiveComponentSize(),
                         text = {
@@ -167,7 +185,7 @@ fun AppTopBar(onClickAbout: () -> Unit, viewModel: MainViewModel = koinInject())
                             )
                         },
                         onClick = {
-                            viewModel.onClickCategory(category)
+                            onClickCategory(category)
                             expanded = false
                         })
                 }
@@ -186,30 +204,35 @@ fun AppTopBar(onClickAbout: () -> Unit, viewModel: MainViewModel = koinInject())
 
 @Composable
 fun PaginatedItemList(
+    loading: Boolean,
+    currentPage: Int,
+    itemIds: ImmutableList<Long>,
+    items: ImmutableList<Item>,
+    seenItemsIds: ImmutableSet<String>,
     onClickItem: (Item) -> Unit,
     onClickComment: (Item) -> Unit,
+    onLoadNextPage: () -> Unit,
+    onMarkItemAsSeen: (Item) -> Unit,
     contentPadding: PaddingValues = PaddingValues.Zero,
-    viewModel: MainViewModel = koinInject()
 ) {
     val listState = rememberLazyListState()
-    val state by viewModel.state
 
-    if (state.itemIds.isEmpty()) {
-        viewModel.loadNextPage()
+    if (itemIds.isEmpty()) {
+        onLoadNextPage()
     } else {
         LaunchedEffect(listState) {
             snapshotFlow { listState.layoutInfo.visibleItemsInfo }
                 .mapNotNull { visibleItems -> visibleItems.lastOrNull()?.index }
                 .collect { lastVisibleItemIndex ->
-                    if (lastVisibleItemIndex >= state.items.size - MainViewModel.PAGE_SIZE / 2) {
-                        viewModel.loadNextPage()
+                    if (lastVisibleItemIndex >= items.size - MainViewModel.PAGE_SIZE / 2) {
+                        onLoadNextPage()
                     }
                 }
         }
     }
 
     Box {
-        if (state.loading && state.items.isEmpty()) {
+        if (loading && items.isEmpty()) {
             CircularProgressIndicator(Modifier.align(Alignment.Center))
         }
         LazyColumn(
@@ -217,22 +240,22 @@ fun PaginatedItemList(
             modifier = Modifier.fillMaxSize(),
             contentPadding = contentPadding
         ) {
-            itemsIndexed(items = state.items, key = { index, item -> item.getItemId() }) { index, item ->
+            items(items = items, key = { item -> item.getItemId() }) { item ->
                 ItemRowWidget(
                     item = item,
-                    seen = state.seenItemsIds.contains(item.getItemId().toString()),
+                    seen = seenItemsIds.contains(item.getItemId().toString()),
                     onClickItem = {
-                        viewModel.markItemAsSeen(item)
+                        onMarkItemAsSeen(item)
                         onClickItem(item)
                     },
                     onClickComment = {
-                        viewModel.markItemAsSeen(item)
+                        onMarkItemAsSeen(item)
                         onClickComment(item)
                     },
                 )
             }
 
-            if (state.items.isNotEmpty() && state.currentPage * MainViewModel.PAGE_SIZE < state.itemIds.size) {
+            if (items.isNotEmpty() && currentPage * MainViewModel.PAGE_SIZE < itemIds.size) {
                 // only display the loading item if there are items loaded
                 item { ItemLoadingWidget() }
             }

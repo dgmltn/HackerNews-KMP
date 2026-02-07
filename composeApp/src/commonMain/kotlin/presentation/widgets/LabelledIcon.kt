@@ -24,6 +24,7 @@ import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
 import hackernewskmp.composeapp.generated.resources.Res
 import hackernewskmp.composeapp.generated.resources.ic_chat_line_linear
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ui.AppPreview
@@ -33,7 +34,7 @@ import ui.trimmedTextStyle
 @Composable
 fun LabelledIcon(
     label: String,
-    icon: Painter? = null,
+    icon: DrawableResource? = null,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -43,7 +44,7 @@ fun LabelledIcon(
     ) {
         if (icon != null) {
             Icon(
-                painter = icon,
+                painter = painterResource(icon),
                 contentDescription = null,
                 modifier = Modifier
                     .size(16.dp),
@@ -62,7 +63,7 @@ fun LabelledIcon(
 @Composable
 fun LabelledIcon(
     label: String,
-    placeholder: Painter? = null,
+    placeholder: DrawableResource? = null,
     url: String? = null,
     modifier: Modifier = Modifier
 ) {
@@ -79,7 +80,7 @@ fun LabelledIcon(
                 var showPlaceholder by remember { mutableStateOf(true) }
                 if (placeholder != null && showPlaceholder) {
                     Icon(
-                        painter = placeholder,
+                        painter = painterResource(placeholder),
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize(),
                     )
@@ -114,12 +115,12 @@ fun Preview_LabelledIcon() {
         Column(verticalArrangement = spacedBy(8.dp)) {
             LabelledIcon(
                 label = "Sample Label",
-                icon = painterResource(Res.drawable.ic_chat_line_linear)
+                icon = Res.drawable.ic_chat_line_linear
             )
             LabelledIcon(
                 label = "Favicon",
                 url = "https://www.google.com/s2/favicons?domain=github.com&sz=128",
-                placeholder = painterResource(Res.drawable.ic_chat_line_linear)
+                placeholder = Res.drawable.ic_chat_line_linear
             )
         }
     }

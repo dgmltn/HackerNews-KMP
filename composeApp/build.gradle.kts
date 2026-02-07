@@ -51,6 +51,7 @@ kotlin {
             implementation(libs.napier)
             implementation(libs.navigation.compose)
             implementation(libs.kotlinx.datetime)
+            implementation(libs.kotlinx.collections.immutable)
             implementation(libs.compose.webview.multiplatform)
             implementation(libs.htmlconverter)
             implementation(libs.coil.compose)
