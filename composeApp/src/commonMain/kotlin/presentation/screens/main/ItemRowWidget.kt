@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import domain.models.Item
 import domain.models.getCommentCount
@@ -35,7 +36,6 @@ import hackernewskmp.composeapp.generated.resources.ic_link_minimalistic_linear
 import io.ktor.http.Url
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import presentation.widgets.LabelledIcon
 import ui.AppPreview
 import kotlin.time.ExperimentalTime
